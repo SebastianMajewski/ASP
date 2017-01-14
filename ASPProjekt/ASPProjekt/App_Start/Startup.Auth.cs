@@ -54,9 +54,9 @@ namespace ASPProjekt
             //   consumerKey: "",
             //   consumerSecret: "");
 
-            //app.UseFacebookAuthentication(
-            //   appId: "",
-            //   appSecret: "");
+            app.UseFacebookAuthentication(
+               appId: "123600241476768",
+               appSecret: "5f691d0acb2754f929a7a07fd9a527e9");
 
             //app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
             //{

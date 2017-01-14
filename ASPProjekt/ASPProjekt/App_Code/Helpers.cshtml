@@ -1,0 +1,29 @@
+﻿@helper CommentBox(string label, string buttonContent, int trashId)
+{
+    <form method="post">
+        <div class="form-group">
+            <label for="comment">@label</label>
+            <textarea class="form-control" rows="5" name="commentContent" id="comment"></textarea>
+        </div>
+        <input type="hidden" name="trashId" value="@trashId"/>
+        <button type="submit" class="btn btn-default">@buttonContent</button>
+    </form>
+}
+
+@helper Comment(string userName, string content)
+{
+    <div class="col-sm-8">
+        <div class="panel panel-white post panel-shadow">
+            <div class="post-heading">
+                <div class="pull-left meta">
+                    <div class="title h5">
+                        <b>@userName</b>
+                    </div>
+                </div>
+            </div>
+            <div class="post-description">
+                <p>@content</p>
+            </div>
+        </div>
+    </div>
+}

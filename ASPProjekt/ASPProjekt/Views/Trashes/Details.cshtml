@@ -1,0 +1,62 @@
+﻿@model ASPProjekt.Models.Trash
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Trash</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Bin.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Bin.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Content)
+        </dt>
+
+        <dd>
+            @Html.Raw(Server.HtmlDecode(Model.Content))
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AddTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AddTime)
+        </dd>
+
+    </dl>
+    @if (System.Web.HttpContext.Current.User.Identity.IsAuthenticated)
+    {
+        @Helpers.CommentBox("Komentarz", "Wyślij", Model.Id)
+    }
+    <div class="container">
+        <div class="row">
+            @foreach (var comment in Model.Comments)
+            {
+                @Helpers.Comment(comment.ApplicationUser.UserName, comment.Content)
+            }
+        </div>
+    </div>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

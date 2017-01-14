@@ -6,6 +6,9 @@ using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace ASPProjekt.Models
 {
+    using System.Collections.Generic;
+    using System.Data.Entity.ModelConfiguration.Conventions;
+
     // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit http://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
     public class ApplicationUser : IdentityUser
     {
@@ -16,10 +19,16 @@ namespace ASPProjekt.Models
             // Add custom user claims here
             return userIdentity;
         }
+
+        public virtual ICollection<Bin> Bins { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        public DbSet<Bin> Bins { get; set; }
+        public DbSet<Trash> Trash { get; set; }
+        public DbSet<Comment> Comments { get; set; }
+
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
