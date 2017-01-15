@@ -465,6 +465,7 @@
     <Content Include="Views\Trashes\Details.cshtml" />
     <Content Include="Views\Trashes\Edit.cshtml" />
     <Content Include="Views\Trashes\Index.cshtml" />
+    <Content Include="Views\Account\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

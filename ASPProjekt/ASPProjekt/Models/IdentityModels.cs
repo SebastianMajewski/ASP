@@ -28,6 +28,7 @@ namespace ASPProjekt.Models
         public DbSet<Bin> Bins { get; set; }
         public DbSet<Trash> Trash { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        //public System.Data.Entity.DbSet<ASPProjekt.Models.ApplicationUser> ApplicationUsers { get; set; }
 
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)

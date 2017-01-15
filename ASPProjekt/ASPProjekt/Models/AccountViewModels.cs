@@ -8,6 +8,10 @@ namespace ASPProjekt.Models
         [Required]
         [Display(Name = "Email")]
         public string Email { get; set; }
+
+        [Required]
+        [Display(Name = "Nick")]
+        public string Nick { get; set; }
     }
 
     public class ExternalLoginListViewModel
@@ -64,6 +68,10 @@ namespace ASPProjekt.Models
 
     public class RegisterViewModel
     {
+        [Required]
+        [Display(Name = "Nick")]
+        public string Nick { get; set; }
+
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]

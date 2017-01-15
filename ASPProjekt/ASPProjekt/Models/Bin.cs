@@ -25,6 +25,10 @@ namespace ASPProjekt.Models
         [DisplayName("Opis")]
         public string Description { get; set; }
 
+        [ForeignKey("ApplicationUser")]
+        public string ApplicationUserId { get; set; }
+
+        public virtual ApplicationUser ApplicationUser { get; set; }
 
         public virtual ICollection<Trash> Trash { get; set; }
 

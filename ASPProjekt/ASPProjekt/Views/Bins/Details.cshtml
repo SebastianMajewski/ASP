@@ -1,34 +1,45 @@
-﻿@model ASPProjekt.Models.Bin
+﻿@using Microsoft.AspNet.Identity
+@model ASPProjekt.Models.Bin
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = Model.Name;
 }
 
-<h2>Details</h2>
+<div class="row">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-9">
+                    <h2>
+                        <small>@Html.RouteLink(Model.ApplicationUser.UserName, "UserRoute", new { userName = Model.ApplicationUser.UserName }, new { @class = "bin_link" })</small>
+                        <small>:</small>
+                        @Html.DisplayFor(model => model.Name)
+                    </h2>
+                </div>
+                @if (HttpContext.Current.User.Identity.GetUserId() == Model.ApplicationUser.Id)
+                {
+                    <div class="col-md-3">
+                        <div class="pull-right">
+                            @Html.ActionLink("Edytuj", "Edit", new { id = Model.Id }, new { @class = "btn btn-primary" })
+                            @Html.ActionLink("Usuń", "Delete", new { id = Model.Id }, new { @class = "btn btn-danger" })
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
 
-<div>
-    <h4>Bin</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-
-    </dl>
+<div class="row">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            @foreach (var trash in Model.Trash)
+            {
+                @Helpers.Trash(trash.Title, trash.AddTime, trash.Id)
+            }
+        </div>     
+    </div>
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
     @Html.ActionLink("Back to List", "Index")
 </p>

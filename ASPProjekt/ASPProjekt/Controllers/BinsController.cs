@@ -10,6 +10,8 @@ using ASPProjekt.Models;
 
 namespace ASPProjekt.Controllers
 {
+    using Microsoft.AspNet.Identity;
+
     public class BinsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -50,6 +52,7 @@ namespace ASPProjekt.Controllers
         {
             if (ModelState.IsValid)
             {
+                bin.ApplicationUserId = this.User.Identity.GetUserId();
                 db.Bins.Add(bin);
                 db.SaveChanges();
                 return RedirectToAction("Index");

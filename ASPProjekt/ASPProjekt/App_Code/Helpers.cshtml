@@ -1,28 +1,39 @@
 ﻿@helper CommentBox(string label, string buttonContent, int trashId)
 {
-    <form method="post">
-        <div class="form-group">
-            <label for="comment">@label</label>
-            <textarea class="form-control" rows="5" name="commentContent" id="comment"></textarea>
-        </div>
-        <input type="hidden" name="trashId" value="@trashId"/>
-        <button type="submit" class="btn btn-default">@buttonContent</button>
-    </form>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <form method="post">
+                <div class="form-group">
+                    <label for="comment">@label</label>
+                    <textarea class="form-control" rows="5" name="commentContent" id="comment"></textarea>
+                </div>
+                <input type="hidden" name="trashId" value="@trashId" />
+                <button type="submit" class="btn btn-default">@buttonContent</button>
+            </form>
+        </div>      
+    </div>
 }
 
 @helper Comment(string userName, string content)
 {
-    <div class="col-sm-8">
-        <div class="panel panel-white post panel-shadow">
-            <div class="post-heading">
-                <div class="pull-left meta">
-                    <div class="title h5">
-                        <b>@userName</b>
-                    </div>
-                </div>
+    <div class="row">
+        <div class="col-sm-6 panel panel-default comment">
+            <div class="panel-heading">
+                <b>@userName</b>
             </div>
-            <div class="post-description">
+            <div class="panel-body">
                 <p>@content</p>
+            </div>
+        </div>
+    </div>    
+}
+
+@helper Trash(string title, DateTime date, int id)
+{
+    <div class="row">
+        <div class="col-sm-8 panel panel-default comment">
+            <div class="panel-body">
+                <h4><a class="link" href="/Trashes/Details/@id">@title</a> <small><small>Dodano: </small>@date.ToString("HH:mm dd.MM.yyyy")</small></h4>
             </div>
         </div>
     </div>

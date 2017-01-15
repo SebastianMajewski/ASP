@@ -12,11 +12,15 @@ using ASPProjekt.Models;
 
 namespace ASPProjekt.Controllers
 {
+    using System.Data.Entity;
+    using System.Net;
+
     [Authorize]
     public class AccountController : Controller
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private ApplicationDbContext db = new ApplicationDbContext();
 
         public AccountController()
         {
@@ -50,6 +54,23 @@ namespace ASPProjekt.Controllers
             {
                 _userManager = value;
             }
+        }
+
+        [Route("User/{userName}", Name = "UserRoute")]
+        [AllowAnonymous]
+        public ActionResult Details(string userName)
+        {
+            if (string.IsNullOrEmpty(userName))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ApplicationUser user = db.Users.Include(x => x.Bins)
+                                  .FirstOrDefault(x => x.UserName == userName);
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+            return View(user);
         }
 
         //
@@ -151,7 +172,7 @@ namespace ASPProjekt.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Nick, Email = model.Email };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {

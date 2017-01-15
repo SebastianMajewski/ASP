@@ -45,8 +45,8 @@ p {
 }
 
 .post .post-heading {
-  height: 95px;
-  padding: 20px 15px;
+  height: 50px;
+  padding: 20px 15px 15px;
 }
 .post .post-heading .avatar {
   width: 60px;
@@ -130,4 +130,50 @@ p {
 }
 .post .post-footer .comments-list .comment > .comments-list {
   margin-left: 50px;
+}
+
+.comment {
+    margin-left: 35px;
+}
+
+.bin_link {
+    text-decoration: none !important;
+    color: #999999 !important;
+}
+
+.link {
+    text-decoration: none !important;
+}
+
+.navbar-nav li a {
+    line-height: 30px;
+}
+
+.navbar-nav > li > a {
+    padding-top:5px !important; 
+    padding-bottom:5px !important;
+}
+
+.navbar-brand {
+    padding: 5px 5px 5px 15px !important;
+}
+
+.navbar-brand > a {
+    text-decoration: none !important;
+    color: #999999 !important;
+}
+
+.navbar-brand > a :hover {
+    text-decoration: none !important;
+    color: #BBBBBB !important;
+}
+
+.navbar {min-height:40px !important}
+
+.title-header {
+    display: inline;
+    margin-left: 5px;
+    line-height: 30px;
+    text-decoration: none !important;
+    color: #999999 !important;
 }

@@ -30,7 +30,10 @@ namespace ASPProjekt.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Trash trash = db.Trash.Include(x => x.Comments).FirstOrDefault(x => x.Id == id);
+            Trash trash = db.Trash.Include(x => x.Comments)
+                                  .Include(x => x.Bin)
+                                  .Include(x => x.Bin.ApplicationUser)
+                                  .FirstOrDefault(x => x.Id == id);
             if (trash == null)
             {
                 return HttpNotFound();
@@ -42,6 +45,10 @@ namespace ASPProjekt.Controllers
         public ActionResult Details(string commentContent, int trashId)
         {
             var trash = this.db.Trash.Include(x => x.Comments).First(x => x.Id == trashId);
+            if (string.IsNullOrEmpty(commentContent))
+            {
+                return this.View(trash);
+            }
             var comment = new Comment
             {
                 ApplicationUserId = this.User.Identity.GetUserId(),
@@ -104,6 +111,7 @@ namespace ASPProjekt.Controllers
         {
             if (ModelState.IsValid)
             {
+                trash.AddTime = DateTime.Now;
                 db.Entry(trash).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
