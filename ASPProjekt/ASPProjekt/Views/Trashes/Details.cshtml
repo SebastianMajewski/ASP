@@ -58,7 +58,10 @@
                 <div class="row">
                     @foreach (var comment in Model.Comments)
                     {
-                        @Helpers.Comment(comment.ApplicationUser.UserName, comment.Content)
+                        if (comment?.ApplicationUser?.UserName != null)
+                        {
+                            @Helpers.Comment(comment.ApplicationUser.UserName, comment.Content)
+                        }
                     }
                 </div>
             </div>

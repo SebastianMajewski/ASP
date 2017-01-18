@@ -117,4 +117,11 @@ namespace ASPProjekt.Models
         [Display(Name = "Email")]
         public string Email { get; set; }
     }
+
+    public class RoleViewModel
+    {
+        public ApplicationUser User { get; set; }
+
+        public string Role { get; set; }
+    }
 }

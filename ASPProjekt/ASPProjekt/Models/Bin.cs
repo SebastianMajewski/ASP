@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Data;
+﻿using System.Collections.Generic;
 
 namespace ASPProjekt.Models
 {
@@ -16,7 +12,8 @@ namespace ASPProjekt.Models
         public int Id { get; set; }
 
         [Required]
-        [StringLength(50, MinimumLength = 4)]
+        [CustomName]
+        [StringLength(50, MinimumLength = 3)]
         [DisplayName("Nazwa")]
         public string Name { get; set; }
 

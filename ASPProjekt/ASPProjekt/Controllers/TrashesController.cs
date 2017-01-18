@@ -12,11 +12,13 @@ namespace ASPProjekt.Controllers
 {
     using Microsoft.AspNet.Identity;
 
+    [Authorize]
     public class TrashesController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Trashes
+        [AllowAnonymous]
         public ActionResult Index()
         {
             var trash = db.Trash.Include(t => t.Bin);
@@ -24,6 +26,7 @@ namespace ASPProjekt.Controllers
         }
 
         // GET: Trashes/Details/5
+        [AllowAnonymous]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -42,6 +45,7 @@ namespace ASPProjekt.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public ActionResult Details(string commentContent, int trashId)
         {
             var trash = this.db.Trash.Include(x => x.Comments).First(x => x.Id == trashId);
@@ -63,7 +67,13 @@ namespace ASPProjekt.Controllers
         // GET: Trashes/Create
         public ActionResult Create()
         {
-            ViewBag.BinId = new SelectList(db.Bins, "Id", "Name");
+            string id = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            var user = this.db.Users.Include(x => x.Bins).FirstOrDefault(x => x.Id == id);
+            if (user.Bins.Count == 0)
+            {
+                return RedirectToAction("Create", "Bins");
+            }          
+            ViewBag.BinId = new SelectList(db.Bins.Where(x => x.ApplicationUserId == id), "Id", "Name");
             return View();
         }
 
@@ -79,10 +89,11 @@ namespace ASPProjekt.Controllers
                 trash.AddTime = DateTime.Now;
                 db.Trash.Add(trash);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Details", "Bins", new { id = trash.BinId });
             }
 
-            ViewBag.BinId = new SelectList(db.Bins, "Id", "Name", trash.BinId);
+            string id = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            ViewBag.BinId = new SelectList(db.Bins.Where(x => x.ApplicationUserId == id), "Id", "Name", trash.BinId);
             return View(trash);
         }
 
@@ -98,7 +109,8 @@ namespace ASPProjekt.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.BinId = new SelectList(db.Bins, "Id", "Name", trash.BinId);
+            string userId = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            ViewBag.BinId = new SelectList(db.Bins.Where(x => x.ApplicationUserId == userId), "Id", "Name", trash.BinId);
             return View(trash);
         }
 
@@ -114,9 +126,10 @@ namespace ASPProjekt.Controllers
                 trash.AddTime = DateTime.Now;
                 db.Entry(trash).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Details", "Bins", new { id = trash.BinId });
             }
-            ViewBag.BinId = new SelectList(db.Bins, "Id", "Name", trash.BinId);
+            string userId = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            ViewBag.BinId = new SelectList(db.Bins.Where(x => x.ApplicationUserId == userId), "Id", "Name", trash.BinId);
             return View(trash);
         }
 
@@ -143,7 +156,7 @@ namespace ASPProjekt.Controllers
             Trash trash = db.Trash.Find(id);
             db.Trash.Remove(trash);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("Details", "Bins", new { id = trash.BinId });
         }
 
         protected override void Dispose(bool disposing)

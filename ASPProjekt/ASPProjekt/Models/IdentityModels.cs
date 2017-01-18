@@ -30,8 +30,7 @@ namespace ASPProjekt.Models
         public DbSet<Comment> Comments { get; set; }
         //public System.Data.Entity.DbSet<ASPProjekt.Models.ApplicationUser> ApplicationUsers { get; set; }
 
-        public ApplicationDbContext()
-            : base("DefaultConnection", throwIfV1Schema: false)
+        public ApplicationDbContext() : base("DefaultConnection", throwIfV1Schema: false)
         {
         }
 

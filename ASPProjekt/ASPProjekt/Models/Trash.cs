@@ -16,6 +16,7 @@ namespace ASPProjekt.Models
         public int Id { get; set; }
 
         [Required]
+        [CustomName]
         [StringLength(50, MinimumLength = 4)]
         [DisplayName("Tytuł")]
         public string Title { get; set; }

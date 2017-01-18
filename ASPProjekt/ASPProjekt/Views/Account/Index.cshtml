@@ -1,0 +1,28 @@
+﻿@model IEnumerable<ASPProjekt.Models.ApplicationUser>
+
+@{
+    ViewBag.Title = "Użytkownicy";
+}
+
+<div class="row">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <h3>Użytkownicy</h3>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            @foreach (var user in Model)
+            {
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <h4>@Html.RouteLink(@user.UserName, "UserRoute", new { userName = @user.UserName }, new { @class = "link" })</h4>
+                    </div>
+                </div>
+            }
+         </div>
+    </div>
+</div>

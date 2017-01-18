@@ -1,18 +1,15 @@
 ﻿@model ASPProjekt.Models.Trash
 
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Nowy";
 }
-
-<h2>Create</h2>
-
 
 @using (Html.BeginForm()) 
 {
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h4>Trash</h4>
+        <h4>Nowy śmieć</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
@@ -24,7 +21,7 @@
         </div>
         
         <div class="form-group">
-            @Html.LabelFor(model => model.BinId, "Kosz", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.BinId, "Śmietnik", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.DropDownList("BinId", null, htmlAttributes: new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.BinId, "", new { @class = "text-danger" })
@@ -39,15 +36,11 @@
 
         <div class="form-group">
             @Html.LabelFor(model => model.Content, htmlAttributes: new { @class = "control-label col-md-2" })
-            @Html.TextAreaFor(model => model.Content)
             @Html.ValidationMessageFor(model => model.Content, "", new { @class = "text-danger" })
+            @Html.TextAreaFor(model => model.Content)            
         </div>
     </div>
 }
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

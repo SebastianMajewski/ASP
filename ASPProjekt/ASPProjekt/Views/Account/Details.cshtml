@@ -1,102 +1,49 @@
-﻿@model ASPProjekt.Models.ApplicationUser
+﻿@using Microsoft.AspNet.Identity
+@model ASPProjekt.Models.ApplicationUser
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Śmietniki";
 }
 
-<h2>Details</h2>
+<div class="row">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-9">
+                    <h2>
+                        <small>Śmietniki użytkownika: </small>
+                        @Html.DisplayFor(model => model.UserName)
+                    </h2>
+                </div>
+                @if (Request.IsAuthenticated && User.IsInRole("Administrator"))
+                {
+                    <div class="col-md-3">
+                        <div class="pull-right">
+                            @Html.ActionLink("Usuń", "Delete", new { id = Model.Id }, new { @class = "btn btn-danger" })
+                            @Html.ActionLink("Edytuj", "Edit", new { id = Model.UserName }, new { @class = "btn btn-info" })
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
 
-<div>
-    <h4>ApplicationUser</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.EmailConfirmed)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.EmailConfirmed)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.PasswordHash)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.PasswordHash)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.SecurityStamp)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.SecurityStamp)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.PhoneNumber)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.PhoneNumber)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.PhoneNumberConfirmed)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.PhoneNumberConfirmed)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.TwoFactorEnabled)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.TwoFactorEnabled)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.LockoutEndDateUtc)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.LockoutEndDateUtc)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.LockoutEnabled)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.LockoutEnabled)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.AccessFailedCount)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.AccessFailedCount)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.UserName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.UserName)
-        </dd>
-
-    </dl>
+<div class="row">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            @foreach (var bin in Model.Bins)
+            {
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <h4>
+                            <small>@Html.ActionLink(bin.ApplicationUser.UserName, "Details", "Account", new { id = bin.ApplicationUser.Id }, new { @class = "bin_link" })</small>
+                            <small>:</small>
+                            @Html.ActionLink(@bin.Name, "Details", "Bins", new { id = @bin.Id }, new { @class = "link" })
+                        </h4>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
 </div>

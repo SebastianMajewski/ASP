@@ -12,17 +12,20 @@ namespace ASPProjekt.Controllers
 {
     using Microsoft.AspNet.Identity;
 
+    [Authorize]
     public class BinsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Bins
+        [AllowAnonymous]
         public ActionResult Index()
         {
             return View(db.Bins.ToList());
         }
 
         // GET: Bins/Details/5
+        [AllowAnonymous]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -54,8 +57,8 @@ namespace ASPProjekt.Controllers
             {
                 bin.ApplicationUserId = this.User.Identity.GetUserId();
                 db.Bins.Add(bin);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                this.db.SaveChanges();
+                return RedirectToAction("Details", "Account", new { userName = this.User.Identity.GetUserName() });
             }
 
             return View(bin);
@@ -85,9 +88,10 @@ namespace ASPProjekt.Controllers
         {
             if (ModelState.IsValid)
             {
+                bin.ApplicationUserId = this.User.Identity.GetUserId();
                 db.Entry(bin).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Details", "Account", new { userName = this.User.Identity.GetUserName() });
             }
             return View(bin);
         }
@@ -115,7 +119,7 @@ namespace ASPProjekt.Controllers
             Bin bin = db.Bins.Find(id);
             db.Bins.Remove(bin);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("Details", "Account", new { userName = this.User.Identity.GetUserName() });
         }
 
         protected override void Dispose(bool disposing)

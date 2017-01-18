@@ -56,6 +56,63 @@ namespace ASPProjekt.Controllers
             }
         }
 
+        [Authorize(Roles = "Administrator")]
+        public ActionResult Edit(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ApplicationUser user = db.Users.FirstOrDefault(x => x.UserName == id);
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.Role = new SelectList(this.db.Roles.ToList(), "Name", "Name");
+
+            return View(new RoleViewModel { User = user });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator")]
+        public ActionResult Edit(RoleViewModel roleViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                this.UserManager.AddToRole(roleViewModel.User.Id, roleViewModel.Role);
+                return RedirectToAction("Details", "Account", new { userName = this.User.Identity.GetUserName() });
+            }
+            ViewBag.Name = new SelectList(this.db.Roles.ToList(), "Name", "Name");
+            return View(roleViewModel);
+        }
+
+        [Authorize(Roles = "Administrator")]
+        public ActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ApplicationUser user = db.Users.Find(id);
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+            return View(user);
+        }
+
+        [Authorize(Roles = "Administrator")]
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            ApplicationUser user = db.Users.Find(id);
+            db.Users.Remove(user);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
         [Route("User/{userName}", Name = "UserRoute")]
         [AllowAnonymous]
         public ActionResult Details(string userName)
@@ -71,6 +128,12 @@ namespace ASPProjekt.Controllers
                 return HttpNotFound();
             }
             return View(user);
+        }
+
+        [AllowAnonymous]
+        public ActionResult Index()
+        {
+            return View(this.db.Users.Include(x => x.Bins).ToList());
         }
 
         //
@@ -96,7 +159,13 @@ namespace ASPProjekt.Controllers
 
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            var user = this.db.Users.FirstOrDefault(x => x.Email == model.Email);
+            if (string.IsNullOrEmpty(user?.UserName))
+            {
+                ModelState.AddModelError("", "Invalid login attempt.");
+                return View(model);
+            }
+            var result = await SignInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, shouldLockout: false);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -191,19 +260,6 @@ namespace ASPProjekt.Controllers
 
             // If we got this far, something failed, redisplay form
             return View(model);
-        }
-
-        //
-        // GET: /Account/ConfirmEmail
-        [AllowAnonymous]
-        public async Task<ActionResult> ConfirmEmail(string userId, string code)
-        {
-            if (userId == null || code == null)
-            {
-                return View("Error");
-            }
-            var result = await UserManager.ConfirmEmailAsync(userId, code);
-            return View(result.Succeeded ? "ConfirmEmail" : "Error");
         }
 
         //
