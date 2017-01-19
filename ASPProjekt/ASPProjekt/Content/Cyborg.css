@@ -1,0 +1,48 @@
+﻿/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-top: 30px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.navbar-fixed-left 
+{
+  width: 150px;
+  position: fixed;
+  border-radius: 0;
+  height: 100%;
+}
+
+.navbar-fixed-left .navbar-nav > li {
+  float: none;  /* Cancel default li float: left */
+  width: 150px;
+}
+
+.navbar-fixed-left + .container {
+  padding-left: 160px;
+}
+
+/* On using dropdown menu (To right shift popuped) */
+.navbar-fixed-left .navbar-nav > li > .dropdown-menu {
+  margin-top: -50px;
+  margin-left: 140px;
+}
+
+.navbar-right {
+    float: right !important;
+    margin-right: 0 !important;
+}
+
+.navbar {
+    min-height:40px !important
+}
+
+.navbar-nav > li > a {
+    padding-top: 5px !important; 
+    padding-bottom: 5px !important;
+    margin-left: 15px !important;
+}
+
+.navbar-brand {
+    padding: 5px 5px 15px 15px !important;
+}

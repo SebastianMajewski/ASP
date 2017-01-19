@@ -1,3 +1,11 @@
 ﻿@{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    if (Session["__Theme"] != null && (bool)Session["__Theme"])
+    {
+        Layout = "~/Views/Shared/_LayoutOld.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+
 }

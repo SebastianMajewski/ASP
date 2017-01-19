@@ -1,0 +1,19 @@
+﻿@using Microsoft.AspNet.Identity
+@if (Request.IsAuthenticated)
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li>
+            @Html.RouteLink("Twoje śmietniki", "UserRoute", new { userName = HttpContext.Current.User.Identity.GetUserName() })
+        </li>
+        <li>
+            @Html.ActionLink("Nowy śmietnik", "Create", "Bins")
+        </li>
+        <li>
+            @Html.ActionLink("Nowy śmieć", "Create", "Trashes")
+        </li>
+        <li>
+            @Html.ActionLink("Zmień wygląd", "ChangeTheme", "Theme")
+        </li>
+    </ul>
+}
+

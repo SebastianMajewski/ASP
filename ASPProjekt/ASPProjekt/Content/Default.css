@@ -1,0 +1,19 @@
+﻿/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-top: 60px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.navbar {
+    min-height:30px !important
+}
+
+.navbar-nav > li > a {
+    padding-top:5px !important; 
+    padding-bottom:5px !important;
+}
+
+.navbar-brand {
+    padding: 5px 5px 5px 15px !important;
+}

@@ -6,7 +6,10 @@
     <title>@ViewBag.Title - ThrowIt</title>
     <link rel="stylesheet" runat="server" media="screen" href="~/Content/prism.css" />
     <script src="~/Scripts/prism.js"  language="javascript" type="text/javascript"></script>
-    @Styles.Render("~/Content/css")
+    <link rel="stylesheet" runat="server" media="screen" href="~/Content/bootstrap.css" />
+    <link rel="stylesheet" runat="server" media="screen" href="~/Content/bootstrap.min.css" />
+    <link rel="stylesheet" runat="server" media="screen" href="~/Content/Site.css" />
+    <link rel="stylesheet" runat="server" media="screen" href="~/Content/Default.css" />
     @Scripts.Render("~/bundles/modernizr")
 
 
@@ -26,6 +29,8 @@
             </div>
             <div class="navbar-collapse collapse">
                 @Html.Partial("_LoginPartial")
+                @Html.Partial("_ActionsPartial")              
+                @Html.Partial("_UserPartial")
             </div>
         </div>
     </div>
@@ -33,7 +38,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - Copyrights Sebastian Majewski</p>
+            @Html.Partial("_FooterPartial")
         </footer>
     </div>
 

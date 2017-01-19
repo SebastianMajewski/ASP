@@ -6,19 +6,6 @@
     @Html.AntiForgeryToken()
 
         <ul class="nav navbar-nav navbar-right">         
-            <li>
-                @Html.ActionLink("Witaj " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
-            </li>
-            <li>
-                @Html.RouteLink("Twoje śmietniki", "UserRoute", new { userName = HttpContext.Current.User.Identity.GetUserName() })
-            </li>
-            <li>
-                @Html.ActionLink("Nowy śmietnik", "Create", "Bins")
-            </li>
-            <li>
-                @Html.ActionLink("Nowy śmieć", "Create", "Trashes")
-            </li>
-
             <li><a href="javascript:document.getElementById('logoutForm').submit()">Wyloguj</a></li>
         </ul>
     }
