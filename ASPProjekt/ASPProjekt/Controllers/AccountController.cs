@@ -88,9 +88,9 @@ namespace ASPProjekt.Controllers
         }
 
         [Authorize(Roles = "Administrator")]
-        public ActionResult Delete(int? id)
+        public ActionResult Delete(string id)
         {
-            if (id == null)
+            if (string.IsNullOrEmpty(id))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
@@ -105,7 +105,7 @@ namespace ASPProjekt.Controllers
         [Authorize(Roles = "Administrator")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed(string id)
         {
             ApplicationUser user = db.Users.Find(id);
             db.Users.Remove(user);
