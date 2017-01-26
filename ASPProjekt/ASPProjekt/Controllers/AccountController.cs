@@ -56,7 +56,7 @@ namespace ASPProjekt.Controllers
             }
         }
 
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator, RootAdmin")]
         public ActionResult Edit(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -66,43 +66,87 @@ namespace ASPProjekt.Controllers
             ApplicationUser user = db.Users.FirstOrDefault(x => x.UserName == id);
             if (user == null)
             {
-                return HttpNotFound();
+                return this.HttpNotFound();
             }
-            ViewBag.Role = new SelectList(this.db.Roles.ToList(), "Name", "Name");
+            var roles = this.db.Roles.ToList();
+            if (this.User.IsInRole("RootAdmin"))
+            {
+                roles = this.UserManager.IsInRole(user.Id, "RootAdmin") ? roles.Where(x => x.Name == "RootAdmin").ToList() : roles.Where(x => x.Name != "RootAdmin").ToList();
+            }
+            else if (this.User.IsInRole("Administrator"))
+            {
+                if (this.User.Identity.GetUserId() == user.Id)
+                {
+                    roles = roles.Where(x => x.Name == "Administrator").ToList();
+                }
+                else if (this.UserManager.IsInRole(user.Id, "Administrator") || this.UserManager.IsInRole(user.Id, "RootAdmin"))
+                {
+                    return this.RedirectToAction("Login");
+                }
+                else
+                {
+                    roles = roles.Where(x => x.Name == "Użytkownik").ToList();
+                }
+            }
 
-            return View(new RoleViewModel { User = user });
+            this.ViewBag.Role = new SelectList(roles, "Name", "Name");
+
+            return this.View(new RoleViewModel { User = user });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator, RootAdmin")]
         public ActionResult Edit(RoleViewModel roleViewModel)
         {
             if (ModelState.IsValid)
             {
+                if (this.UserManager.IsInRole(roleViewModel.User.Id, "Użytkownik"))
+                {
+                    this.UserManager.RemoveFromRole(roleViewModel.User.Id, "Użytkownik");
+                }
+
+                if (this.UserManager.IsInRole(roleViewModel.User.Id, "Administrator"))
+                {
+                    this.UserManager.RemoveFromRole(roleViewModel.User.Id, "Administrator");
+                }
+
                 this.UserManager.AddToRole(roleViewModel.User.Id, roleViewModel.Role);
-                return RedirectToAction("Details", "Account", new { userName = this.User.Identity.GetUserName() });
+                return RedirectToAction("Details", "Account", new { userName = roleViewModel.User.UserName });
             }
             ViewBag.Name = new SelectList(this.db.Roles.ToList(), "Name", "Name");
             return View(roleViewModel);
         }
 
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator, RootAdmin")]
         public ActionResult Delete(string id)
         {
             if (string.IsNullOrEmpty(id))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ApplicationUser user = db.Users.Find(id);
+
+            var user = this.db.Users.Find(id);
+
             if (user == null)
             {
-                return HttpNotFound();
+                return this.HttpNotFound();
             }
-            return View(user);
+
+            if (this.UserManager.IsInRole(id, "RootAdmin"))
+            {
+                return this.HttpNotFound();
+            }
+
+            if (this.UserManager.IsInRole(id, "Administrator") && !this.User.IsInRole("RootAdmin"))
+            {
+                return this.RedirectToAction("Login");
+            }
+
+            return this.View(user);
         }
 
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator, RootAdmin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(string id)
@@ -121,12 +165,16 @@ namespace ASPProjekt.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ApplicationUser user = db.Users.Include(x => x.Bins)
-                                  .FirstOrDefault(x => x.UserName == userName);
+
+            var user = db.Users.Include(x => x.Bins).FirstOrDefault(x => x.UserName == userName);
             if (user == null)
             {
                 return HttpNotFound();
             }
+
+            bool canDelete = !(this.UserManager.IsInRole(user.Id, "RootAdmin") || (this.UserManager.IsInRole(user.Id, "Administrator") && !this.User.IsInRole("RootAdmin")));
+
+            this.ViewBag.Delete = canDelete;
             return View(user);
         }
 

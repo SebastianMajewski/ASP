@@ -1,0 +1,29 @@
+﻿@using Microsoft.AspNet.Identity
+@{
+
+    if (string.IsNullOrEmpty((string)Session["__ThemePath"]))
+    {
+        Layout = "~/Views/Shared/_DefaultLayout.cshtml";
+    }
+    else
+    {
+        Layout = (string)Session["__ThemePath"];
+    }
+}
+
+@if (Request.IsAuthenticated)
+{
+    <div class="row">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                Witaj @User.Identity.GetUserName().
+            </div>
+            <div class="panel-body">
+                Jako zalogowany użytkownik możesz dodawać własne śmietniki, śmieci i komentować prace innych użytkowników. 
+            </div>
+        </div>
+    </div>
+}
+<hr/>
+@RenderBody()
+

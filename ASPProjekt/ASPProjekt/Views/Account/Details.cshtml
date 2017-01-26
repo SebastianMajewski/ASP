@@ -15,11 +15,14 @@
                         @Html.DisplayFor(model => model.UserName)
                     </h2>
                 </div>
-                @if (Request.IsAuthenticated && User.IsInRole("Administrator"))
+                @if (Request.IsAuthenticated && (User.IsInRole("Administrator") || User.IsInRole("RootAdmin")))
                 {
                     <div class="col-md-3">
                         <div class="pull-right">
-                            @Html.ActionLink("Usuń", "Delete", new { id = Model.Id }, new { @class = "btn btn-danger" })
+                            @if (ViewBag.Delete)
+                            {
+                                @Html.ActionLink("Usuń", "Delete", new { id = Model.Id }, new { @class = "btn btn-danger" })
+                            }
                             @Html.ActionLink("Edytuj", "Edit", new { id = Model.UserName }, new { @class = "btn btn-info" })
                         </div>
                     </div>

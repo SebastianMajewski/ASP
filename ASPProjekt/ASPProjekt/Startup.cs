@@ -22,18 +22,33 @@ namespace ASPProjekt
         protected void Seed()
         {
             var context = new ApplicationDbContext();
+            var store = new RoleStore<IdentityRole>(context);
+            var manager = new RoleManager<IdentityRole>(store);
+            var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
+
             if (!context.Roles.Any(r => r.Name == "Administrator"))
-            {
-                var store = new RoleStore<IdentityRole>(context);
-                var manager = new RoleManager<IdentityRole>(store);
+            {                
                 var role = new IdentityRole { Name = "Administrator" };
+                manager.Create(role);
+            }
+
+            if (!context.Roles.Any(r => r.Name == "Użytkownik"))
+            {
+                var role = new IdentityRole { Name = "Użytkownik" };
+                manager.Create(role);
+            }
+
+            if (!context.Roles.Any(r => r.Name == "RootAdmin"))
+            {
+                var role = new IdentityRole { Name = "RootAdmin" };
 
                 manager.Create(role);
             }
 
-            if (!context.Users.Any(x => x.UserName == "Admin"))
-            {
-                var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
+            var hasAdmin = context.Users.ToList().Any(user => userManager.IsInRole(user.Id, "RootAdmin"));
+
+            if (!hasAdmin)
+            {              
                 var passwordHash = new PasswordHasher();
 
                 var user = new ApplicationUser
@@ -44,7 +59,7 @@ namespace ASPProjekt
                 };
 
                 userManager.Create(user);
-                userManager.AddToRole(user.Id, "Administrator");
+                userManager.AddToRole(user.Id, "RootAdmin");
             }
         }
     }

@@ -1,11 +1,27 @@
 ﻿@{
     if (Session["__Theme"] != null && (bool)Session["__Theme"])
     {
-        Layout = "~/Views/Shared/_LayoutOld.cshtml";
+        Layout = "~/Views/Shared/_DefaultLayout.cshtml";
+        if (Session["__ThemePath"] == null)
+        {
+            Session.Add("__ThemePath", "~/Views/Shared/_DefaultLayout.cshtml");
+        }
+        else
+        {
+            Session["__ThemePath"] = "~/Views/Shared/_DefaultLayout.cshtml";
+        }
+
     }
     else
     {
-        Layout = "~/Views/Shared/_Layout.cshtml";
+        Layout = "~/Views/Shared/_CyborgLayout.cshtml";
+        if (Session["__ThemePath"] == null)
+        {
+            Session.Add("__ThemePath", "~/Views/Shared/_CyborgLayout.cshtml");
+        }
+        else
+        {
+            Session["__ThemePath"] = "~/Views/Shared/_CyborgLayout.cshtml";
+        }
     }
-
 }
