@@ -1,19 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-
-namespace ASPProjekt.Controllers
+﻿namespace ASPProjekt.Controllers
 {
+    using System;
     using System.Data.Entity;
-    using System.Threading;
-
-    using ASPProjekt.Models;
+    using System.Linq;
+    using System.Web.Mvc;
+    using Models;
 
     public class HomeController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
+        private readonly IRepository db;
+
+        public HomeController()
+        {
+            this.db = new Repository(new ApplicationDbContext());
+        }
+
+        public HomeController(IRepository context)
+        {
+            this.db = context;
+        }
 
         public ActionResult Index()
         {

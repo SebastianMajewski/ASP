@@ -1,27 +1,81 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Linq;
-using System.Net;
-using System.Web;
-using System.Web.Mvc;
-using ASPProjekt.Models;
-
-namespace ASPProjekt.Controllers
+﻿namespace ASPProjekt.Controllers
 {
+    using System.Linq;
+    using System.Net;
+    using System.Web.Mvc;
     using Microsoft.AspNet.Identity;
+    using Models;
 
     [Authorize]
     public class BinsController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
+        private readonly IRepository db;
+        private IControllerIdentity identity;
+        private bool reloadUserIdentity = false;
 
-        // GET: Bins
-        [AllowAnonymous]
-        public ActionResult Index()
+        public BinsController()
         {
-            return View(db.Bins.ToList());
+            this.db = new Repository(new ApplicationDbContext());
+            this.reloadUserIdentity = true;
+        }
+
+        public BinsController(IRepository repository, IControllerIdentity identity)
+        {
+            this.db = repository;
+            this.identity = identity;
+            this.reloadUserIdentity = false;
+        }
+
+        // GET: Bins/Create
+        public ActionResult Create()
+        {
+            return this.View("Create");
+        }
+
+        // POST: Bins/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create([Bind(Include = "Id,Name,Description")] Bin bin)
+        {
+            if (this.ModelState.IsValid)
+            {
+                if(this.reloadUserIdentity) this.identity = new ControllerIdentity(this.User.Identity);
+                bin.ApplicationUserId = this.identity.GetUserId();
+                this.db.Add(bin);
+                return this.RedirectToAction("Details", "Account", new { userName = this.identity.GetUserName() });
+            }
+
+            return this.View("Create", bin);
+        }
+
+        // GET: Bins/Delete/5
+        public ActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            var bin = this.db.Bins.FirstOrDefault(x => x.Id == id.Value);
+            if (bin == null)
+            {
+                return this.HttpNotFound();
+            }
+
+            return this.View("Delete", bin);
+        }
+
+        // POST: Bins/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            if (this.reloadUserIdentity) this.identity = new ControllerIdentity(this.User.Identity);
+            var bin = this.db.Bins.FirstOrDefault(x => x.Id == id);
+            this.db.Remove(bin);
+            return this.RedirectToAction("Details", "Account", new { userName = this.identity.GetUserName() });
         }
 
         // GET: Bins/Details/5
@@ -32,36 +86,14 @@ namespace ASPProjekt.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Bin bin = db.Bins.Find(id);
+
+            var bin = this.db.Bins.FirstOrDefault(x => x.Id == id.Value);
             if (bin == null)
             {
-                return HttpNotFound();
-            }
-            return View(bin);
-        }
-
-        // GET: Bins/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Bins/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,Description")] Bin bin)
-        {
-            if (ModelState.IsValid)
-            {
-                bin.ApplicationUserId = this.User.Identity.GetUserId();
-                db.Bins.Add(bin);
-                this.db.SaveChanges();
-                return RedirectToAction("Details", "Account", new { userName = this.User.Identity.GetUserName() });
+                return this.HttpNotFound();
             }
 
-            return View(bin);
+            return this.View("Details", bin);
         }
 
         // GET: Bins/Edit/5
@@ -71,12 +103,14 @@ namespace ASPProjekt.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Bin bin = db.Bins.Find(id);
+
+            var bin = this.db.Bins.FirstOrDefault(x => x.Id == id.Value);
             if (bin == null)
             {
-                return HttpNotFound();
+                return this.HttpNotFound();
             }
-            return View(bin);
+
+            return this.View("Edit", bin);
         }
 
         // POST: Bins/Edit/5
@@ -86,48 +120,31 @@ namespace ASPProjekt.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,Name,Description")] Bin bin)
         {
-            if (ModelState.IsValid)
+            if (this.ModelState.IsValid)
             {
-                bin.ApplicationUserId = this.User.Identity.GetUserId();
-                db.Entry(bin).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Details", "Account", new { userName = this.User.Identity.GetUserName() });
+                if (this.reloadUserIdentity) this.identity = new ControllerIdentity(this.User.Identity);
+                bin.ApplicationUserId = this.identity.GetUserId();
+                this.db.Edit(bin);
+                return this.RedirectToAction("Details", "Account", new { userName = this.identity.GetUserName() });
             }
-            return View(bin);
+
+            return this.View("Edit", bin);
         }
 
-        // GET: Bins/Delete/5
-        public ActionResult Delete(int? id)
+        // GET: Bins
+        [AllowAnonymous]
+        public ActionResult Index()
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Bin bin = db.Bins.Find(id);
-            if (bin == null)
-            {
-                return HttpNotFound();
-            }
-            return View(bin);
-        }
-
-        // POST: Bins/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            Bin bin = db.Bins.Find(id);
-            db.Bins.Remove(bin);
-            db.SaveChanges();
-            return RedirectToAction("Details", "Account", new { userName = this.User.Identity.GetUserName() });
+            return this.View("Index", this.db.Bins.ToList());
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                db.Dispose();
+                this.db.Dispose();
             }
+
             base.Dispose(disposing);
         }
     }

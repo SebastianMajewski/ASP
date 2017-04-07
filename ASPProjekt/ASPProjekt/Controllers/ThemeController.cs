@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-
-namespace ASPProjekt.Controllers
+﻿namespace ASPProjekt.Controllers
 {
+    using System.Web.Mvc;
+
     public class ThemeController : Controller
     {
         // GET: Theme
